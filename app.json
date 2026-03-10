@@ -8,25 +8,7 @@
     "scheme": "taskbattle",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "ios": {
-      "bundleIdentifier": "com.taskBattle.ios"
-    },
-    "android": {
-      "package": "com.taskBattle.android"
-    }
-    "plugins": [
-      [
-        "@react-native-google-signin/google-signin",
-        {
-          "iosUrlScheme": "com.googleusercontent.apps._some_id_here_"
-        }
-      ]
-    ]
-    {
-      "supportsTablet": true
-    },
-
-    
+    "supportsTablet": true,
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
