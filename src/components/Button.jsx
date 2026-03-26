@@ -1,13 +1,12 @@
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
-import { router } from "expo-router";
 
-export function ButtonCriar({ onPress }) {
+export function ButtonCriar({ onPress, title = "Continuar" }) {
   return (
     <TouchableOpacity 
       style={styles.button}
-      onPress={() => router.push("/dashboard")}
+      onPress={onPress}
     >
-      <Text style={styles.buttonText}>Criar conta</Text>
+      <Text style={styles.buttonText}>{title}</Text>
     </TouchableOpacity>
   );
 }
@@ -19,7 +18,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     borderRadius: 8,
     alignItems: "center",
-    justifyContent: "center",
   },
   buttonText: {
     color: "#ffffff",

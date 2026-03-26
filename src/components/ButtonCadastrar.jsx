@@ -7,7 +7,7 @@ export default function ButtonCadastrar() {
       style={styles.button}
       onPress={() => router.push("/")}
     >
-      <Text style={styles.buttonText}>Não tem uma conta? Entrar</Text>
+      <Text style={styles.buttonText}>Não tem uma conta? Criar</Text>
     </TouchableOpacity>
   );
 }
@@ -15,12 +15,9 @@ export default function ButtonCadastrar() {
 const styles = StyleSheet.create({
   button: {
     paddingVertical: 12,
-    borderRadius: 8,
     alignItems: "center",
-    justifyContent: "center",
   },
   buttonText: {
-    marginTop: 10,
     color: "#1573ed",
     fontSize: 16,
     fontWeight: "500",

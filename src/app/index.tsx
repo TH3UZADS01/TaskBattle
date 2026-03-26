@@ -1,20 +1,42 @@
-import { StyleSheet, Text, View, TextInput } from "react-native";
+import { StyleSheet, Text, View, Alert } from "react-native";
 import { useState } from "react";
 import { router } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import { Input } from "@/src/components/Input";
 import { ButtonCriar } from "@/src/components/Button";
-import ButtonJatem from "@/src/components/ButtonJatenho";
+import ButtonJatem from "@/src/components/ButtonJatem";
 
 export default function Page() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
-  function criarConta() {
-    const usuario = { username, email, senha };
-    console.log("Usuário criado:", usuario);
-    router.push("/dashboard");
+  async function criarConta() {
+    if (!username || !email || !senha) {
+      Alert.alert("Erro", "Preencha todos os campos");
+      return;
+    }
+
+    const novoUsuario = { username, email, senha };
+
+    const dados = await AsyncStorage.getItem("usuarios");
+    const lista = dados ? JSON.parse(dados) : [];
+
+    const existe = lista.find((u: any) => u.email === email);
+
+    if (existe) {
+      Alert.alert("Erro", "E-mail já cadastrado");
+      return;
+    }
+
+    lista.push(novoUsuario);
+
+    await AsyncStorage.setItem("usuarios", JSON.stringify(lista));
+
+    Alert.alert("Sucesso", "Conta criada!");
+
+    router.push("/entrar");
   }
 
   return (
@@ -23,35 +45,16 @@ export default function Page() {
       <Text style={styles.subtitle}>Crie a sua conta.</Text>
 
       <View style={styles.main}>
-        <View style={styles.inputBox}>
-          <Ionicons name="person-outline" size={20} color="#686868" />
-          <TextInput
-            style={styles.credencias}
-            placeholder="Nome de usuário"
-            onChangeText={setUsername}
-          />
-        </View>
+        <Input placeholder="Nome" value={username} onChangeText={setUsername} />
+        <Input placeholder="E-mail" value={email} onChangeText={setEmail} />
+        <Input
+          placeholder="Senha"
+          value={senha}
+          secureTextEntry
+          onChangeText={setSenha}
+        />
 
-        <View style={styles.inputBox}>
-          <Ionicons name="mail-outline" size={20} color="#686868" />
-          <TextInput
-            style={styles.credencias}
-            placeholder="E-mail"
-            onChangeText={setEmail}
-          />
-        </View>
-
-        <View style={styles.inputBox}>
-          <Ionicons name="lock-closed-outline" size={20} color="#686868" />
-          <TextInput
-            style={styles.credencias}
-            placeholder="Senha"
-            secureTextEntry
-            onChangeText={setSenha}
-          />
-        </View>
-
-        <ButtonCriar onPress={criarConta} />
+        <ButtonCriar onPress={criarConta} title="Criar conta" />
         <ButtonJatem />
       </View>
     </View>
@@ -59,58 +62,18 @@ export default function Page() {
 }
 
 const styles = StyleSheet.create({
-  container:{
-    flex:1,
-    justifyContent:"center",
-    alignItems:"center",
-    padding:24,
-    backgroundColor:"#f0f0f0",
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f0f0f0",
   },
-
-  main:{
-    backgroundColor:"#ffffff",
-    shadowColor:"#000",
-    shadowOffset:{width:0,height:10},
-    shadowOpacity:0.2,
-    shadowRadius:8,
-    elevation:2,
-    width:"80%",
-    padding:20,
-    borderRadius:16,
+  main: {
+    backgroundColor: "#fff",
+    width: "80%",
+    padding: 20,
+    borderRadius: 16,
   },
-
-  inputBox:{
-    flexDirection:"row",
-    alignItems:"center",
-    backgroundColor:"#fff",
-    borderRadius:8,
-    paddingHorizontal:10,
-    marginBottom:12,
-    shadowColor:"#000",
-    shadowOffset:{width:0,height:5},
-    shadowOpacity:0.2,
-    shadowRadius:5,
-    elevation:2,
-  },
-
-  credencias:{
-    flex:1,
-    height:40,
-    marginLeft:8,
-  },
-
-  title:{
-    fontFamily:"poppins-regular",
-    color:"#1573ed",
-    fontSize:48,
-    fontWeight:900,
-    marginBottom:6,
-  },
-
-  subtitle:{
-    fontFamily:"poppins-regular",
-    fontSize:16,
-    color:"#686868",
-    marginBottom:20,
-  },
+  title: { fontSize: 32, fontWeight: "bold", color: "#1573ed" },
+  subtitle: { marginBottom: 10 },
 });
