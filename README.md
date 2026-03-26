@@ -1,50 +1,84 @@
-# Welcome to your Expo app 👋
+# 🚀 TaskBattle
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Aplicativo mobile desenvolvido com **React Native + Expo**, focado em produtividade gamificada.
+Transforme suas tarefas do dia a dia em desafios e ganhe XP ao concluí-las 🎮
 
-## Get started
+---
 
-1. Install dependencies
+## 📱 Funcionalidades
 
-   ```bash
-   npm install
-   ```
+* ✅ Cadastro e login de usuário
+* 📝 Criação de tarefas
+* 🎯 Definição de importância (baixa, média, alta)
+* ✔️ Marcar tarefas como concluídas
+* ⚡ Sistema de XP baseado na dificuldade
+* 💾 Armazenamento local com AsyncStorage
+* 👤 Dados separados por usuário
 
-2. Start the app
+---
 
-   ```bash
-   npx expo start
-   ```
+## 🛠️ Tecnologias utilizadas
 
-In the output, you'll find options to open the app in a
+* React Native
+* Expo Router
+* AsyncStorage
+* JavaScript / TypeScript
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+---
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## 🎮 Como funciona
 
-## Get a fresh project
+Cada tarefa possui um nível de importância:
 
-When you're ready, run:
+* 🟢 Baixa → +10 XP
+* 🟡 Média → +20 XP
+* 🔴 Alta → +30 XP
 
-```bash
-npm run reset-project
+Ao concluir uma tarefa, você acumula XP e evolui sua produtividade.
+
+---
+
+## 📂 Estrutura do projeto
+
+```
+app/
+ ├── index.tsx (cadastro)
+ ├── entrar.tsx (login)
+ └── (tabs)/
+      ├── dashboard.tsx
+      ├── tarefas.tsx
+      └── perfil.tsx
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-## Learn more
+## 🚀 Como rodar o projeto
 
-To learn more about developing your project with Expo, look at the following resources:
+```bash
+# instalar dependências
+npm install
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+# rodar o app
+npx expo start
+```
 
-## Join the community
+---
 
-Join our community of developers creating universal apps.
+## 📌 Próximas melhorias
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+* 📊 Sistema de níveis (level up)
+* 🏆 Conquistas
+* 🔔 Notificações de tarefas
+* ☁️ Integração com backend
+
+---
+
+## 👨‍💻 Autor
+
+Desenvolvido por Matheus, Claudemir, Renato e Everton 🚀
+
+---
+
+## ⭐ Observação
+
+Projeto em desenvolvimento, focado em aprendizado e evolução na área de desenvolvimento mobile.
