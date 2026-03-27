@@ -1,19 +1,30 @@
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { useContext } from "react";
+import { ThemeContext } from "@/src/context/ThemeContext";
+import { lightTheme, darkTheme } from "@/src/theme/colors";
 
 export default function TabsLayout() {
+  const { dark } = useContext(ThemeContext);
+  const theme = dark ? darkTheme : lightTheme;
+
   return (
     <Tabs
       screenOptions={{
         headerStyle: {
           backgroundColor: "#1573ed",
         },
-        headerTintColor: "#fff",
+        headerTintColor: "#ffffff",
         headerTitleStyle: {
           fontWeight: "bold",
         },
 
-        tabBarActiveTintColor: "#1573ed",
+        tabBarActiveTintColor: dark ? "#fff" : "#1d1d1d",
+        tabBarInactiveTintColor: dark ? "#1d1d1d" : "#ffffff",
+        tabBarStyle: {
+          backgroundColor: "#1573ed",
+          borderTopColor: dark ? "#333" : "#ccc",
+        },
       }}
     >
       <Tabs.Screen
@@ -42,6 +53,16 @@ export default function TabsLayout() {
           title: "Perfil",
           tabBarIcon: ({ color }) => (
             <Ionicons name="person" size={22} color={color} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="config"
+        options={{
+          title: "Config",
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="settings" size={22} color={color} />
           ),
         }}
       />

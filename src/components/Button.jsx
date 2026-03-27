@@ -13,14 +13,14 @@ export function ButtonCriar({ onPress, title = "Continuar" }) {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: "#1573ed",
+    backgroundColor: "#ffffff",
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 8,
     alignItems: "center",
   },
   buttonText: {
-    color: "#ffffff",
+    color: "#1573ed",
     fontSize: 16,
     fontWeight: "bold",
   },

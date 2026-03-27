@@ -35,12 +35,18 @@ export default function Entrar() {
       <Text style={styles.subtitle}>Entrar com sua conta.</Text>
 
       <View style={styles.main}>
-        <Input placeholder="E-mail" value={email} onChangeText={setEmail} />
+        <Input
+        placeholder="E-mail"
+        value={email}
+        onChangeText={setEmail}
+        fixed
+        />
         <Input
           placeholder="Senha"
           value={senha}
           secureTextEntry
           onChangeText={setSenha}
+          fixed
         />
 
         <ButtonCriar onPress={entrarConta} title="Entrar" />
@@ -55,14 +61,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f0f0f0",
+    backgroundColor: "#165bb5",
   },
   main: {
-    backgroundColor: "#fff",
+    backgroundColor: "#1573ed",
     width: "80%",
     padding: 20,
     borderRadius: 16,
   },
-  title: { fontSize: 32, fontWeight: "bold", color: "#1573ed" },
-  subtitle: { marginBottom: 10 },
+  title: { fontSize: 32, fontWeight: "bold", color: "#ffffff" },
+  subtitle: { marginBottom: 10, color: "#ffffff", fontSize: 16 },
 });

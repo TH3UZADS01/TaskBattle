@@ -1,20 +1,30 @@
 import { TextInput, View } from "react-native";
+import { useContext } from "react";
+import { ThemeContext } from "@/src/context/ThemeContext";
+import { lightTheme, darkTheme } from "@/src/theme/colors";
 
 interface InputProps {
   placeholder?: string;
   secureTextEntry?: boolean;
-  placeholderTextColor?: string;
   onChangeText?: (text: string) => void;
   value?: string;
+  fixed?: boolean;
 }
 
 export function Input({
   placeholder,
   secureTextEntry,
-  placeholderTextColor,
   onChangeText,
   value,
+  fixed,
 }: InputProps) {
+  const { dark } = useContext(ThemeContext);
+  const theme = dark ? darkTheme : lightTheme;
+
+  const bg = fixed ? "#1573ed" : theme.card;
+  const textColor = fixed ? "#ffffff" : theme.text;
+  const placeholderColor = fixed ? "#ffffffac" : dark ? "#aaa" : "#666";
+
   return (
     <View
       style={{
@@ -25,7 +35,7 @@ export function Input({
         shadowOpacity: 0.2,
         shadowRadius: 5,
         elevation: 2,
-        backgroundColor: "#fff",
+        backgroundColor: bg,
         borderRadius: 8,
       }}
     >
@@ -34,9 +44,10 @@ export function Input({
           flex: 1,
           borderRadius: 8,
           paddingHorizontal: 10,
+          color: textColor,
         }}
-        placeholder={placeholder || "Digite algo..."}
-        placeholderTextColor={placeholderTextColor || "#1c1c1c71"}
+        placeholder={placeholder}
+        placeholderTextColor={placeholderColor}
         secureTextEntry={secureTextEntry}
         onChangeText={onChangeText}
         value={value}

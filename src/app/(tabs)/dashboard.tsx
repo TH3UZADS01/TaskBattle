@@ -6,14 +6,18 @@ import {
   TextInput,
   FlatList,
 } from "react-native";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ThemeContext } from "@/src/context/ThemeContext";
+import { lightTheme, darkTheme } from "@/src/theme/colors";
 
 export default function Dashboard() {
   const [tarefas, setTarefas] = useState<any[]>([]);
   const [texto, setTexto] = useState("");
   const [importancia, setImportancia] = useState("media");
   const [usuario, setUsuario] = useState<any>(null);
+  const { dark } = useContext(ThemeContext);
+  const theme = dark ? darkTheme : lightTheme;
 
   useEffect(() => {
     carregarUsuario();
@@ -75,14 +79,14 @@ export default function Dashboard() {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.main}>
-        <Text style={styles.sectionTitle}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <View style={[styles.main, { backgroundColor: theme.card }]}>
+        <Text style={{ color: theme.text }}>
           Suas tarefas {usuario ? `(${usuario.username})` : ""}
         </Text>
 
         <TextInput
-          style={styles.input}
+          style={[styles.input, { color: theme.text, backgroundColor: theme.background }]}
           placeholder="Nova tarefa..."
           value={texto}
           onChangeText={setTexto}
@@ -91,7 +95,8 @@ export default function Dashboard() {
         <View style={styles.row}>
           <TouchableOpacity onPress={() => setImportancia("baixa")}>
             <Text
-              style={[styles.tag, importancia === "baixa" && styles.active]}
+              style={[styles.tag, { color: theme.text, backgroundColor: theme.background },
+              importancia === "baixa" && styles.active]}
             >
               Baixa
             </Text>
@@ -99,14 +104,16 @@ export default function Dashboard() {
 
           <TouchableOpacity onPress={() => setImportancia("media")}>
             <Text
-              style={[styles.tag, importancia === "media" && styles.active]}
+              style={[styles.tag, { color: theme.text, backgroundColor: theme.background },
+              importancia === "media" && styles.active]}
             >
               Média
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => setImportancia("alta")}>
-            <Text style={[styles.tag, importancia === "alta" && styles.active]}>
+            <Text style={[styles.tag, { color: theme.text, backgroundColor: theme.background },
+              importancia === "alta" && styles.active]}>
               Alta
             </Text>
           </TouchableOpacity>
@@ -121,11 +128,12 @@ export default function Dashboard() {
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <TouchableOpacity
-              style={[styles.card, item.concluida && { opacity: 0.5 }]}
+              style={[styles.card, { backgroundColor: theme.background } ]}
               onPress={() => toggleTarefa(item.id)}
             >
               <Text
                 style={{
+                  color: theme.text,
                   textDecorationLine: item.concluida ? "line-through" : "none",
                 }}
               >
@@ -145,12 +153,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    backgroundColor: "#f0f0f0",
     padding: 16,
   },
 
   main: {
-    backgroundColor: "#fff",
     width: "100%",
     padding: 20,
     borderRadius: 16,
