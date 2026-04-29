@@ -1,149 +1,100 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  TextInput,
-  FlatList,
-} from "react-native";
-import { useState, useEffect, useContext } from "react";
+import {StyleSheet,Text,View,} from "react-native";
+import { useEffect, useState, useContext } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AnimatedCircularProgress } from "react-native-circular-progress";
+
 import { ThemeContext } from "@/src/context/ThemeContext";
 import { lightTheme, darkTheme } from "@/src/theme/colors";
 
 export default function Dashboard() {
-  const [tarefas, setTarefas] = useState<any[]>([]);
-  const [texto, setTexto] = useState("");
-  const [importancia, setImportancia] = useState("media");
+  const [progresso, setProgresso] = useState(0);
+  const [xp, setXp] = useState(0);
   const [usuario, setUsuario] = useState<any>(null);
+
   const { dark } = useContext(ThemeContext);
   const theme = dark ? darkTheme : lightTheme;
 
   useEffect(() => {
-    carregarUsuario();
+    carregar();
   }, []);
 
-  async function carregarUsuario() {
+  async function carregar() {
     const user = await AsyncStorage.getItem("userLogado");
-    const userParse = user ? JSON.parse(user) : null;
+    const parsed = user ? JSON.parse(user) : null;
 
-    if (userParse) {
-      setUsuario(userParse);
-      carregarTarefas(userParse.email);
-    }
+    if (!parsed) return;
+
+    setUsuario(parsed);
+
+    const tarefasData = await AsyncStorage.getItem(`tarefas_${parsed.email}`);
+    const lista = tarefasData ? JSON.parse(tarefasData) : [];
+
+    const feitas = lista.filter((t: any) => t.concluida).length;
+    const total = lista.length;
+
+    const xpTotal = lista
+      .filter((t: any) => t.concluida)
+      .reduce((acc: number, t: any) => acc + t.xp, 0);
+
+    setXp(xpTotal);
+    setProgresso(total ? (feitas / total) * 100 : 0);
   }
 
-  async function carregarTarefas(email: string) {
-    const dados = await AsyncStorage.getItem(`tarefas_${email}`);
-    if (dados) setTarefas(JSON.parse(dados));
+  function calcularNivel(xp: number) {
+    return Math.floor(xp / 100);
   }
 
-  async function salvar(lista: any[]) {
-    setTarefas(lista);
-
-    if (usuario) {
-      await AsyncStorage.setItem(
-        `tarefas_${usuario.email}`,
-        JSON.stringify(lista),
-      );
-    }
-  }
-
-  function calcularXP(nivel: string) {
-    if (nivel === "alta") return 30;
-    if (nivel === "media") return 20;
-    return 10;
-  }
-
-  async function adicionarTarefa() {
-    if (!texto) return;
-
-    const nova = {
-      id: Date.now(),
-      titulo: texto,
-      importancia,
-      concluida: false,
-      xp: calcularXP(importancia),
-    };
-
-    const lista = [...tarefas, nova];
-    salvar(lista);
-    setTexto("");
-  }
-
-  async function toggleTarefa(id: number) {
-    const lista = tarefas.map((t) =>
-      t.id === id ? { ...t, concluida: !t.concluida } : t,
-    );
-    salvar(lista);
+  function patente(xp: number) {
+    if (xp < 100) return "Iniciante";
+    if (xp < 300) return "Soldado";
+    if (xp < 600) return "Elite";
+    if (xp < 1000) return "Lenda";
+    return "Mestre";
   }
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={[styles.main, { backgroundColor: theme.card }]}>
-        <Text style={{ color: theme.text }}>
-          Suas tarefas {usuario ? `(${usuario.username})` : ""}
+
+        <Text style={[styles.title, { color: theme.text }]}>
+          Olá {usuario?.username || ""}
         </Text>
 
-        <TextInput
-          style={[styles.input, { color: theme.text, backgroundColor: theme.background }]}
-          placeholder="Nova tarefa..."
-          value={texto}
-          onChangeText={setTexto}
-        />
+        <View style={styles.center}>
+          <AnimatedCircularProgress
+            size={150}
+            width={12}
+            fill={progresso}
+            tintColor="#1573ed"
+            backgroundColor="#ddd"
+          >
+            {() => (
+              <Text style={{ color: theme.text }}>
+                {Math.round(progresso)}%
+              </Text>
+            )}
+          </AnimatedCircularProgress>
 
-        <View style={styles.row}>
-          <TouchableOpacity onPress={() => setImportancia("baixa")}>
-            <Text
-              style={[styles.tag, { color: theme.text, backgroundColor: theme.background },
-              importancia === "baixa" && styles.active]}
-            >
-              Baixa
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={() => setImportancia("media")}>
-            <Text
-              style={[styles.tag, { color: theme.text, backgroundColor: theme.background },
-              importancia === "media" && styles.active]}
-            >
-              Média
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={() => setImportancia("alta")}>
-            <Text style={[styles.tag, { color: theme.text, backgroundColor: theme.background },
-              importancia === "alta" && styles.active]}>
-              Alta
-            </Text>
-          </TouchableOpacity>
+          <Text style={{ color: theme.text, marginTop: 10 }}>
+            Progresso do dia
+          </Text>
         </View>
 
-        <TouchableOpacity style={styles.button} onPress={adicionarTarefa}>
-          <Text style={styles.buttonText}>+ Nova tarefa</Text>
-        </TouchableOpacity>
+        <View style={[styles.card, { backgroundColor: theme.background }]}>
+          <Text style={{ color: theme.text }}>XP total</Text>
+          <Text style={styles.xp}>{xp}</Text>
+        </View>
 
-        <FlatList
-          data={tarefas}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={[styles.card, { backgroundColor: theme.background } ]}
-              onPress={() => toggleTarefa(item.id)}
-            >
-              <Text
-                style={{
-                  color: theme.text,
-                  textDecorationLine: item.concluida ? "line-through" : "none",
-                }}
-              >
-                {item.titulo}
-              </Text>
+        <View style={[styles.card, { backgroundColor: theme.background }]}>
+          <Text style={{ color: theme.text }}>Nível</Text>
+          <Text style={styles.level}>{calcularNivel(xp)}</Text>
+        </View>
 
-              <Text style={styles.xp}>+{item.xp} XP</Text>
-            </TouchableOpacity>
-          )}
-        />
+        <View style={[styles.card, { backgroundColor: theme.background }]}>
+          <Text style={{ color: theme.text }}>Patente</Text>
+          <Text style={styles.rank}>{patente(xp)}</Text>
+        </View>
+
       </View>
     </View>
   );
@@ -162,60 +113,39 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
 
-  sectionTitle: {
-    fontSize: 18,
+  title: {
+    fontSize: 20,
     fontWeight: "bold",
-    marginBottom: 12,
+    marginBottom: 20,
   },
 
-  input: {
-    backgroundColor: "#f5f5f5",
-    padding: 10,
-    borderRadius: 8,
-    marginBottom: 10,
-  },
-
-  row: {
-    flexDirection: "row",
-    gap: 10,
-    marginBottom: 10,
-  },
-
-  tag: {
-    padding: 6,
-    borderRadius: 6,
-    backgroundColor: "#ddd",
-  },
-
-  active: {
-    backgroundColor: "#1573ed",
-    color: "#fff",
+  center: {
+    alignItems: "center",
+    marginBottom: 20,
   },
 
   card: {
-    backgroundColor: "#f7f7f7",
     padding: 15,
     borderRadius: 10,
     marginBottom: 10,
-    flexDirection: "row",
-    justifyContent: "space-between",
+    alignItems: "center",
   },
 
   xp: {
     color: "#1573ed",
+    fontSize: 18,
     fontWeight: "bold",
   },
 
-  button: {
-    backgroundColor: "#1573ed",
-    padding: 14,
-    borderRadius: 8,
-    alignItems: "center",
-    marginBottom: 10,
+  level: {
+    color: "#1573ed",
+    fontSize: 18,
+    fontWeight: "bold",
   },
 
-  buttonText: {
-    color: "#fff",
+  rank: {
+    color: "#1573ed",
+    fontSize: 16,
     fontWeight: "bold",
   },
 });

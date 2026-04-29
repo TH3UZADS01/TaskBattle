@@ -37,7 +37,16 @@ export default function Config() {
     if (!usuario) return;
 
     const atualizado = { ...usuario, username: nome };
+
     await AsyncStorage.setItem("userLogado", JSON.stringify(atualizado));
+
+    const dados = await AsyncStorage.getItem("usuarios");
+    let lista = dados ? JSON.parse(dados) : [];
+
+    lista = lista.map((u: any) => (u.email === usuario.email ? atualizado : u));
+
+    await AsyncStorage.setItem("usuarios", JSON.stringify(lista));
+
     setUsuario(atualizado);
   }
 
@@ -51,10 +60,13 @@ export default function Config() {
       <View style={[styles.main, { backgroundColor: theme.card }]}>
         <Text style={[styles.title, { color: theme.text }]}>Configurações</Text>
 
-        <Text style={{ color: theme.text }}>Nome</Text>
+        <Text style={styles.subtitle}>mudar nome</Text>
 
         <TextInput
-          style={[styles.input, { color: theme.text, backgroundColor: theme.background }]}
+          style={[
+            styles.input,
+            { color: theme.text, backgroundColor: theme.background },
+          ]}
           value={nome}
           onChangeText={setNome}
         />
@@ -99,6 +111,7 @@ const styles = StyleSheet.create({
   },
 
   row: {
+    alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 10,
@@ -125,4 +138,6 @@ const styles = StyleSheet.create({
     color: "red",
     fontWeight: "bold",
   },
+
+  subtitle: { marginBottom: 10, color: "#ffffff", fontSize: 16},
 });

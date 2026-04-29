@@ -19,10 +19,10 @@ export default function TabsLayout() {
           fontWeight: "bold",
         },
 
-        tabBarActiveTintColor: dark ? "#fff" : "#1d1d1d",
-        tabBarInactiveTintColor: dark ? "#1d1d1d" : "#ffffff",
+        tabBarActiveTintColor: dark ? "#1573ed" : "#1573ed",
+        tabBarInactiveTintColor: dark ? "#ffffff" : "#1d1d1d",
         tabBarStyle: {
-          backgroundColor: "#1573ed",
+          backgroundColor: theme.card,
           borderTopColor: dark ? "#333" : "#ccc",
         },
       }}
